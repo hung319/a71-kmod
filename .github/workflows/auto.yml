@@ -27,11 +27,11 @@ jobs:
       - name: add ksu
         run: |
           curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
-          sed -i '/enable_sucompat()/d' KernelSU/kernel/ksu.c
           patch -p1 < patch/do_faccessat.patch
           patch -p1 < patch/do_execveat_common.patch
           patch -p1 < patch/vfs_read.patch
           patch -p1 < patch/vfs_statx.patch
+          sed -i '/enable_sucompat()/d' KernelSU/kernel/ksu.c
       - name: build kernel
         run: |
           args="-j$(nproc --all) \
