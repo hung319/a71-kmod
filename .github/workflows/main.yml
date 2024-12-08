@@ -1,0 +1,56 @@
+name: build kernel
+on:
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Update dependence
+        run: |
+          sudo apt update
+          sudo apt install default-jdk git gnupg flex bison gperf build-essential zip curl \
+          libc6-dev libncurses-dev libx11-dev libreadline-dev libgl1 libgl1-mesa-dev \
+          python3 make sudo gcc g++ bc grep tofrodos python3-markdown libxml2-utils xsltproc \
+          zlib1g-dev python-is-python3 libc6-dev libtinfo6 make repo cpio kmod openssl \
+          libelf-dev pahole libssl-dev -y
+          sudo apt install build-essential bc flex bison libncurses5-dev libssl-dev git ccache python2 libtinfo5 curl -y
+          sudo rm -rf /usr/bin/python
+          sudo ln -s /usr/bin/python2.7 /usr/bin/python
+          python --version
+          
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: install gcc、clang
+        run: |
+          git clone https://github.com/ravindu644/Toolchains_by_Google.git
+ 
+      - name: build kernel
+        run: |
+          args="-j$(nproc --all) \
+            O=out \
+                  ARCH=arm64 \
+                  CLANG_TRIPLE=aarch64-linux-gnu- \
+                  CROSS_COMPILE=$(pwd)/Toolchains_by_Google/aarch64-4.9/bin/aarch64-linux-android- \
+                  REAL_CC=$(pwd)/Toolchains_by_Google/clang-10.0/bin/clang"
+                  export DTC_EXT=dtc
+            LLVM=1
+            LLVM_IAS=1
+            make ${args} a71_eur_open_defconfig 
+            make ${args} 
+
+      - name: build ak3
+        run : |
+          git clone https://github.com/CCCC-L/anyKernel3 releases
+          sed -i "s/{branch}/${{ github.ref_name }}/" releases/anykernel.sh
+          rm -rf releases/.git
+          mv out/arch/arm64/boot/Image releases
+
+      - name: Upload boot
+        uses: actions/upload-artifact@v4
+        with:
+          name: T970-kernel-${{ github.ref_name }}
+          path: releases
