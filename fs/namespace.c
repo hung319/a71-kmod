@@ -2162,11 +2162,12 @@ static inline bool may_mount(void)
 }
 
 static inline bool may_mandlock(void)
-{	
-	pr_warn("VFS: \"mand\" mount option not supported");
+{
+#ifndef	CONFIG_MANDATORY_FILE_LOCKING
 	return false;
-}
 #endif
+	return capable(CAP_SYS_ADMIN);
+}
 
 static int can_umount(const struct path *path, int flags)
 {
