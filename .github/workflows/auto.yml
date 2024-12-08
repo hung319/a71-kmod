@@ -24,14 +24,6 @@ jobs:
           git clone https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9  toolchain/gcc/linux-x86/aarch64/aarch64-linux-android-4.9
           git clone https://github.com/proprietary-stuff/llvm-arm-toolchain-ship-10.0 toolchain/llvm-arm-toolchain-ship/10.0
  
-      - name: add ksu
-        run: |
-          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s v0.9.5
-          patch -p1 < patch/do_faccessat.patch
-          patch -p1 < patch/do_execveat_common.patch
-          patch -p1 < patch/vfs_read.patch
-          patch -p1 < patch/vfs_statx.patch
-          sed -i '/enable_sucompat()/d' KernelSU/kernel/ksu.c
       - name: build kernel
         run: |
           args="-j$(nproc --all) \
