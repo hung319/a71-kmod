@@ -28,6 +28,20 @@ jobs:
       - name: install gcc、clang
         run: |
           git clone https://github.com/ravindu644/Toolchains_by_Google.git
+
+      - name: 😋 Setup KernelSU
+        run: |
+          # Delete old KernelSU
+          if [ -d "./KernelSU" ]; then
+            rm -rf "./KernelSU"
+          fi
+          if [ -d "./drivers/kernelsu" ]; then
+            rm -rf "./drivers/kernelsu"
+          fi
+
+          # Apply new KernelSU patches
+          curl -LSs "https://raw.githubusercontent.com/tiann/KernelSU/main/kernel/setup.sh" | bash -s
+          sed -i '/enable_sucompat()/d' KernelSU/kernel/ksu.c
           
       - name: build kernel
         run: |
