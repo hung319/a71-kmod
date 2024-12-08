@@ -31,17 +31,17 @@ jobs:
  
       - name: build kernel
         run: |
-          args="-j$(nproc --all) \
-            O=out \
-                  ARCH=arm64 \
-                  CLANG_TRIPLE=aarch64-linux-gnu- \
-                  CROSS_COMPILE=$(pwd)/Toolchains_for_Snapdragon/aarch64-linux-android-4.9/bin/aarch64-linux-android- \
-                  REAL_CC=$(pwd)/Toolchains_for_Snapdragon/llvm-arm-toolchain-ship-10.0/bin"
-                  export DTC_EXT=dtc
-            LLVM=1
-            LLVM_IAS=1
-            make ${args} a71_eur_open_defconfig 
-            make ${args} 
+          sudo args="-j$(nproc --all) \
+                O=out \
+                    ARCH=arm64 \
+                    CLANG_TRIPLE=aarch64-linux-gnu- \
+                    CROSS_COMPILE=$(pwd)/Toolchains_for_Snapdragon/aarch64-linux-android-4.9/bin/aarch64-linux-android- \
+                    REAL_CC=$(pwd)/Toolchains_for_Snapdragon/llvm-arm-toolchain-ship-10.0/bin"
+                    export DTC_EXT=dtc
+                 LLVM=1
+                 LLVM_IAS=1
+                 make ${args} a71_eur_open_defconfig 
+                 make ${args} 
 
       - name: build ak3
         run : |
