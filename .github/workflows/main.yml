@@ -30,10 +30,6 @@ jobs:
           git clone https://github.com/ravindu644/Toolchains_by_Google.git
 
       - name: 😋 Setup KernelSU
-        working-directory: ${{ env.KERNEL_NAME }}
-        env:
-          ARCH: ${{ steps.generate-args.outputs.ARCH }}
-        if: ${{ env.ENABLE_KERNELSU == 'true' }}
         run: |
           # Delete old KernelSU
           if [ -d "./KernelSU" ]; then
